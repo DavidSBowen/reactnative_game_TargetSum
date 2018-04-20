@@ -3,16 +3,19 @@ import { View, Text, StyleSheet, Button } from 'react-native';
 import PropTypes from 'prop-types';
 
 import RandomNumber from './RandomNumber';
+import Timer from './Timer';
 
 class Game extends React.Component {
 
     static propTypes = {
         randomNumberCount: PropTypes.number.isRequired,
+        initialSeconds: PropTypes.number.isRequired,
     };
 
     state = {
         selectedNumbers: [],
         gameStatus: 'PLAYING',
+        remainingSeconds: this.props.initialSeconds,
     };
 
     randomNumbers = Array
@@ -26,6 +29,23 @@ class Game extends React.Component {
         .reduce((acc, cur) => {
             return acc + cur;
         }, 0);
+
+    componentDidMount() {
+        this.intervalId = setInterval(() => {
+            this.setState((prevState) => {
+                return { remainingSeconds: (prevState.remainingSeconds - 1) };
+            }, () => {
+                if (this.state.remainingSeconds === 0) {
+                    clearInterval(this.intervalId);
+                    return { gameStatus: 'LOST' };
+                }
+            });
+        }, 1000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.intervalId);
+    }
 
     // TODO: Shuffle numbers
 
@@ -41,7 +61,7 @@ class Game extends React.Component {
         } else {
             this.setState((prevState) => {
                 return { selectedNumbers: [...prevState.selectedNumbers, numberIndex] };
-            }, function() {
+            }, function () {
                 this.gameStatus();
             });
         }
@@ -54,11 +74,29 @@ class Game extends React.Component {
             return acc + this.randomNumbers[cur];
         }, 0);
 
-        let gameStatus = (sumSelected < this.target) ? 'PLAYING' : (sumSelected > this.target) ? 'LOST' : 'WON';
+        let gameStatus = this.checkGameStatus(sumSelected)
 
         this.setState({
             gameStatus: gameStatus,
         });
+    };
+
+    checkGameStatus = (sumSelected) => {
+        if (sumSelected < this.target) {
+            return 'PLAYING';
+        } else if (sumSelected > this.target) {
+            clearInterval(this.intervalId);
+            return 'LOST';
+        } else {
+            clearInterval(this.intervalId);
+            return 'WON';
+        }
+    }
+
+    checkSecondsForLoss = () => {
+        if (this.state.remainingSeconds === 0) {
+            this.setState({ gameStatus: 'LOST' });
+        }
     };
 
     handlePlayAgainPress = () => {
@@ -90,6 +128,10 @@ class Game extends React.Component {
                 </View>
                 <Button title="Play Again?" onPress={this.handlePlayAgainPress}></Button>
                 <Text>{this.state.gameStatus}</Text>
+                <Timer
+                    time={this.state.remainingSeconds}
+                    gameStatusOnSeconds={this.checkSecondsForLoss}
+                />
                 {/* <View style={styles.remainingSpace}>
                 </View> */}
             </View>
