@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 import PropTypes from 'prop-types';
 
 import RandomNumber from './RandomNumber';
@@ -12,6 +12,7 @@ class Game extends React.Component {
 
     state = {
         selectedNumbers: [],
+        gameStatus: 'PLAYING',
     };
 
     randomNumbers = Array
@@ -33,39 +34,42 @@ class Game extends React.Component {
     }
 
     toggleNumber = (numberIndex) => {
-        if (this.state.selectedNumbers.indexOf(numberIndex) >= 0) {
+        if (this.state.selectedNumbers.indexOf(numberIndex) >= 0 || (this.state.gameStatus !== 'PLAYING')) {
             this.setState(() => {
-                return { selectedNumbers: this.state.selectedNumbers.filter((a) => a !== numberIndex) };
+                return false;
             });
         } else {
             this.setState((prevState) => {
                 return { selectedNumbers: [...prevState.selectedNumbers, numberIndex] };
+            }, function() {
+                this.gameStatus();
             });
         }
-    };
+    }
 
     // gameStatus: PLAYING, WON, LOST
 
     gameStatus = () => {
-        const sumSelected = this.state.selectedNumbers.reduce((acc,cur)=> {
+        const sumSelected = this.state.selectedNumbers.reduce((acc, cur) => {
             return acc + this.randomNumbers[cur];
         }, 0);
-        
-        if (sumSelected < this.target) {
-            return 'PLAYING';
-        } else if (sumSelected > this.target) {
-            return 'LOST';
-        } else {
-            return 'WON';
-        }
+
+        let gameStatus = (sumSelected < this.target) ? 'PLAYING' : (sumSelected > this.target) ? 'LOST' : 'WON';
+
+        this.setState({
+            gameStatus: gameStatus,
+        });
     };
 
+    handlePlayAgainPress = () => {
+
+    }
+
     render() {
-        const gameStatus = this.gameStatus();
         return (
             <View style={styles.container}>
                 <View style={styles.section1} >
-                    <View style={[styles.target, styles[`STATUS_${gameStatus}`]]}>
+                    <View style={[styles.target, styles[`STATUS_${this.state.gameStatus}`]]}>
                         <Text style={styles.targetText}>{this.target}</Text>
                     </View>
                 </View>
@@ -77,14 +81,15 @@ class Game extends React.Component {
                                     key={index}
                                     id={index}
                                     number={randomNum}
-                                    isDisabled={this.isNumberSelected(index)}
+                                    isDisabled={this.isNumberSelected(index) || this.state.gameStatus !== 'PLAYING'}
                                     onPress={this.toggleNumber}
                                 />
                             );
                         })
                     }
                 </View>
-                <Text>{gameStatus}</Text>
+                <Button title="Play Again?" onPress={this.handlePlayAgainPress}></Button>
+                <Text>{this.state.gameStatus}</Text>
                 {/* <View style={styles.remainingSpace}>
                 </View> */}
             </View>
