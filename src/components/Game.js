@@ -11,6 +11,7 @@ class Game extends React.Component {
         randomNumberCount: PropTypes.number.isRequired,
         initialSeconds: PropTypes.number.isRequired,
         resetGame: PropTypes.func.isRequired,
+        backToTitle: PropTypes.func.isRequired,
     };
 
     state = {
@@ -107,6 +108,10 @@ class Game extends React.Component {
         this.props.resetGame();
     }
 
+    handleHomePress = () => {
+        this.props.backToTitle();
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -131,6 +136,7 @@ class Game extends React.Component {
                     }
                 </View>
                 <Button title="Play Again?" onPress={this.handlePlayAgainPress}></Button>
+                <Button title="Home Screen" onPress={this.handleHomePress}></Button>
                 <Text>{this.state.gameStatus}</Text>
                 <Timer
                     time={this.state.remainingSeconds}
