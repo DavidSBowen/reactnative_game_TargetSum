@@ -10,12 +10,14 @@ class Game extends React.Component {
     static propTypes = {
         randomNumberCount: PropTypes.number.isRequired,
         initialSeconds: PropTypes.number.isRequired,
+        resetGame: PropTypes.func.isRequired,
     };
 
     state = {
         selectedNumbers: [],
         gameStatus: 'PLAYING',
         remainingSeconds: this.props.initialSeconds,
+        gameSeconds: this.props.initialSeconds,
     };
 
     randomNumbers = Array
@@ -29,6 +31,7 @@ class Game extends React.Component {
         .reduce((acc, cur) => {
             return acc + cur;
         }, 0);
+
 
     componentDidMount() {
         this.intervalId = setInterval(() => {
@@ -62,19 +65,19 @@ class Game extends React.Component {
             this.setState((prevState) => {
                 return { selectedNumbers: [...prevState.selectedNumbers, numberIndex] };
             }, function () {
-                this.gameStatus();
+                this.calcGameStatus();
             });
         }
     }
 
-    // gameStatus: PLAYING, WON, LOST
+    // 
 
-    gameStatus = () => {
+    calcGameStatus = () => {
         const sumSelected = this.state.selectedNumbers.reduce((acc, cur) => {
             return acc + this.randomNumbers[cur];
         }, 0);
 
-        let gameStatus = this.checkGameStatus(sumSelected)
+        let gameStatus = this.checkGameStatus(sumSelected);
 
         this.setState({
             gameStatus: gameStatus,
@@ -99,8 +102,9 @@ class Game extends React.Component {
         }
     };
 
+    //  ??????????
     handlePlayAgainPress = () => {
-
+        this.props.resetGame();
     }
 
     render() {

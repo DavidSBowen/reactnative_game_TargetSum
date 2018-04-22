@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 class Timer extends React.Component {
 
-    shouldComponentUpdate(nextProps, nextState) {
+    shouldComponentUpdate(nextProps) {
         return (nextProps.time !== this.props.time);
     }
 
