@@ -10,6 +10,7 @@ class App extends React.Component {
         initialSeconds: 10,
         key: 0,
         gameStarted: false,
+        consecutiveWins: 0,
     }
 
     startGame = () => {
@@ -19,13 +20,27 @@ class App extends React.Component {
     }
 
     resetGame = () => {
-        this.setState({ key: this.state.key + 1 });
+        this.setState((prevState) => {
+            return {
+                key: prevState.key + 1,
+            };
+        });
     }
 
     backToTitle = () => {
         this.setState({
             gameStarted: false,
+            consecutiveWins: 0,
         });
+    }
+
+    incrementGameWinCount = () => {
+        this.setState((prevState) => {
+            return { consecutiveWins: prevState.consecutiveWins + 1 };
+        });
+    }
+    resetGameWinCount = () => {
+        this.setState({ consecutiveWins: 0 });
     }
 
     render() {
@@ -36,7 +51,10 @@ class App extends React.Component {
                     initialSeconds={this.state.initialSeconds}
                     resetGame={this.resetGame}
                     key={this.state.key}
-                    backToTitle={this.backToTitle} /> :
+                    backToTitle={this.backToTitle}
+                    consecutiveWins={this.state.consecutiveWins}
+                    incrementGameWinCount={this.incrementGameWinCount}
+                    resetGameWinCount={this.resetGameWinCount} /> :
                 <Start
                     startGame={this.startGame}
                 />

@@ -12,6 +12,9 @@ class Game extends React.Component {
         initialSeconds: PropTypes.number.isRequired,
         resetGame: PropTypes.func.isRequired,
         backToTitle: PropTypes.func.isRequired,
+        consecutiveWins: PropTypes.number.isRequired,
+        incrementGameWinCount: PropTypes.func.isRequired,
+        resetGameWinCount: PropTypes.func.isRequired,
     };
 
     state = {
@@ -69,10 +72,6 @@ class Game extends React.Component {
         clearInterval(this.intervalId);
     }
 
-    // TODO: Shuffle numbers
-
-
-
     isNumberSelected = (numberIndex) => {
         return this.state.selectedNumbers.indexOf(numberIndex) >= 0;
     }
@@ -108,15 +107,18 @@ class Game extends React.Component {
             return 'PLAYING';
         } else if (sumSelected > this.target) {
             clearInterval(this.intervalId);
+            this.props.resetGameWinCount();
             return 'LOST';
         } else {
             clearInterval(this.intervalId);
+            this.props.incrementGameWinCount();
             return 'WON';
         }
     }
 
     checkSecondsForLoss = () => {
         if (this.state.remainingSeconds === 0) {
+            this.props.resetGameWinCount();
             this.setState({ gameStatus: 'LOST' });
         }
     };
@@ -132,6 +134,7 @@ class Game extends React.Component {
     render() {
         return (
             <View style={styles.container}>
+                <Text>{this.props.consecutiveWins}</Text>
                 <View style={styles.section1} >
                     <View style={[styles.target, styles[`STATUS_${this.state.gameStatus}`]]}>
                         <Text style={styles.targetText}>{this.target}</Text>
@@ -159,12 +162,15 @@ class Game extends React.Component {
                     />
                 </View>
                 <View style={styles.buttonContainer}>
-                    <View style={styles.button}>
-                        <Button
-                            title="Play Again"
-                            onPress={this.handlePlayAgainPress}>
-                        </Button>
-                    </View>
+                    {
+                        this.state.gameStatus === 'PLAYING' ? false :
+                            <View style={styles.button}>
+                                <Button
+                                    title="Play Again"
+                                    onPress={this.handlePlayAgainPress}>
+                                </Button>
+                            </View>
+                    }
                     <View style={styles.button}>
                         <Button
                             title="Home Screen"
