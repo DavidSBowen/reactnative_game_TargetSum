@@ -33,6 +33,24 @@ class Game extends React.Component {
             return acc + cur;
         }, 0);
 
+    shuffle = (array) => {
+        let currentIndex = array.length;
+        let temporaryValue;
+        let randomIndex;
+
+        while (0 !== currentIndex) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+        }
+
+        return array;
+    }
+
+    shuffledNumbers = this.shuffle(this.randomNumbers);
 
     componentDidMount() {
         this.intervalId = setInterval(() => {
@@ -52,6 +70,8 @@ class Game extends React.Component {
     }
 
     // TODO: Shuffle numbers
+
+
 
     isNumberSelected = (numberIndex) => {
         return this.state.selectedNumbers.indexOf(numberIndex) >= 0;
@@ -119,7 +139,7 @@ class Game extends React.Component {
                 </View>
                 <View style={styles.section2}>
                     {
-                        this.randomNumbers.map((randomNum, index) => {
+                        this.shuffledNumbers.map((randomNum, index) => {
                             return (
                                 <RandomNumber
                                     key={index}
@@ -141,7 +161,7 @@ class Game extends React.Component {
                 <View style={styles.buttonContainer}>
                     <View style={styles.button}>
                         <Button
-                            title="Play Again?"
+                            title="Play Again"
                             onPress={this.handlePlayAgainPress}>
                         </Button>
                     </View>
