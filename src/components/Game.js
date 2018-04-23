@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 
 import RandomNumber from './RandomNumber';
@@ -161,20 +161,18 @@ class Game extends React.Component {
                     />
                 </View>
                 <View style={styles.buttonContainer}>
-                    {
-                        this.state.gameStatus === 'PLAYING' ? false :
-                            <View style={styles.button}>
-                                <Button
-                                    title="Play Again"
-                                    onPress={this.handlePlayAgainPress}>
-                                </Button>
-                            </View>
-                    }
                     <View style={styles.button}>
-                        <Button
-                            title="Home Screen"
-                            onPress={this.handleHomePress}>
-                        </Button>
+                        {
+                            this.state.gameStatus === 'PLAYING' ? false :
+                                <TouchableOpacity onPress={this.handlePlayAgainPress}>
+                                    <Text style={styles.buttonText}>Play Again</Text>
+                                </TouchableOpacity>
+                        }
+                    </View>
+                    <View style={styles.button}>
+                        <TouchableOpacity onPress={this.handleHomePress}>
+                            <Text style={styles.buttonText}>Home</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
                 <Text>{this.state.gameStatus}</Text>
@@ -198,12 +196,17 @@ const styles = StyleSheet.create({
         borderRadius: 2,
         borderColor: 'black',
         marginHorizontal: 25,
-        borderWidth: 1,
+    },
+    buttonText: {
+        backgroundColor: '#ccc',
+        textAlign: 'center',
+        lineHeight: 50,
+        color: 'rgba(75,75,255,1)',
+        fontSize: 20,
     },
     buttonContainer: {
         flex: .75,
         flexDirection: 'row',
-        justifyContent: 'center',
         alignItems: 'center',
     },
     target: {
@@ -243,9 +246,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-around',
         backgroundColor: '#eee',
-    },
-    remainingSpace: {
-        flex: 3,
     },
 });
 
