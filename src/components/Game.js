@@ -49,7 +49,6 @@ class Game extends React.Component {
             array[currentIndex] = array[randomIndex];
             array[randomIndex] = temporaryValue;
         }
-
         return array;
     }
 
@@ -92,7 +91,7 @@ class Game extends React.Component {
 
     calcGameStatus = () => {
         const sumSelected = this.state.selectedNumbers.reduce((acc, cur) => {
-            return acc + this.randomNumbers[cur];
+            return acc + this.shuffledNumbers[cur];
         }, 0);
 
         let gameStatus = this.checkGameStatus(sumSelected);
