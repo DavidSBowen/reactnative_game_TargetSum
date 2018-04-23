@@ -9,7 +9,7 @@ class App extends React.Component {
         randomNumberCount: 6,
         initialSeconds: 10,
         key: 0,
-        gameStarted: false,
+        gameStarted: true,
     }
 
     startGame = () => {

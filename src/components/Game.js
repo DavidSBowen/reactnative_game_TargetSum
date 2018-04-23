@@ -71,8 +71,6 @@ class Game extends React.Component {
         }
     }
 
-    // 
-
     calcGameStatus = () => {
         const sumSelected = this.state.selectedNumbers.reduce((acc, cur) => {
             return acc + this.randomNumbers[cur];
@@ -103,7 +101,6 @@ class Game extends React.Component {
         }
     };
 
-    //  ??????????
     handlePlayAgainPress = () => {
         this.props.resetGame();
     }
@@ -135,13 +132,27 @@ class Game extends React.Component {
                         })
                     }
                 </View>
-                <Button title="Play Again?" onPress={this.handlePlayAgainPress}></Button>
-                <Button title="Home Screen" onPress={this.handleHomePress}></Button>
+                <View>
+                    <Timer
+                        time={this.state.remainingSeconds}
+                        gameStatusOnSeconds={this.checkSecondsForLoss}
+                    />
+                </View>
+                <View style={styles.buttonContainer}>
+                    <View style={styles.button}>
+                        <Button
+                            title="Play Again?"
+                            onPress={this.handlePlayAgainPress}>
+                        </Button>
+                    </View>
+                    <View style={styles.button}>
+                        <Button
+                            title="Home Screen"
+                            onPress={this.handleHomePress}>
+                        </Button>
+                    </View>
+                </View>
                 <Text>{this.state.gameStatus}</Text>
-                <Timer
-                    time={this.state.remainingSeconds}
-                    gameStatusOnSeconds={this.checkSecondsForLoss}
-                />
                 {/* <View style={styles.remainingSpace}>
                 </View> */}
             </View>
@@ -155,6 +166,20 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         paddingTop: 50,
+    },
+    button: {
+        flex: 1,
+        backgroundColor: 'rgba(50,50,50,1)',
+        borderRadius: 2,
+        borderColor: 'black',
+        marginHorizontal: 25,
+        borderWidth: 1,
+    },
+    buttonContainer: {
+        flex: .75,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     target: {
         paddingHorizontal: 50,
